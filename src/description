@@ -1,0 +1,185 @@
+----------
+Submission requirements for Project 1 Lexical Analyzer and Project 2 Syntax Analyzer:
+----------
+
+1. All sections of code must be commented in an organized manner.
+Individual procedures require a minimum of one explanatory comment above each block of code.
+
+2. Libraries or modules for handling regular expressions are not permitted to be used. This includes,
+but is not limited to "re" in Python, and "regex" in Java and C++.
+
+3. A plaintext README .txt or .md file (Word processor documents will not be accepted) must be included with
+your source code, containing the following information:
+	a. Your first and last name.
+	b. Programming Language used in your project, including the version number.
+	c. The compiler or interpreter that is used to build or execute your project.
+	d. The development environment, including any tools or IDEs used.
+	e. Instructions to build or execute the program, such as using "make" or "javac".
+	f. Complete documentation on end-user usage of the program, including all user input and output and command arguments.
+
+4. If an IDE was used, please include related files and directories, such as ".idea" or ".vscode" directories
+for projects developed with IntelliJ, Clion, PyCharm, or Visual Studio Code.
+
+5. Remove all binary executables of the project prior to submission. This includes but is
+not limited to ".class" ".o" ".exe" ".com".
+
+6. All source code and the README file must be compressed in a single ZIP file
+with the filename structure as follows: FirstLast_Project#.zip where First and Last are your name,
+and the project number is specified.
+
+7. In accordance with the Towson University Student Academic Integrity Policy,
+no plagiarism or academic dishonesty will be tolerated.
+Concepts and ideas may be discussed but sharing or reusing code is not accepted and will result in a minimum
+of a zero on the assignment. Consult the course syllabus for further details.
+
+
+----------
+The syntax
+----------
+
+         /**
+         * variable vs terminal?
+         * rules?
+         * syntax table?
+         */
+
+Program  =  "program"  Identifier  ":"  Body  "end" .
+
+Body  =  [ Declarations ]  Statements .
+
+Declarations  =  Declaration { Declaration } .
+
+Declaration  =  ( "bool" | "int" )  Identifier ";" .
+
+Statements  =  Statement { ";" Statement } .
+
+Statement  =  AssignmentStatement
+           |  ConditionalStatement
+           |  IterativeStatement
+           |  PrintStatement .
+
+AssignmentStatement  =  Identifier ":=" Expression .
+
+ConditionalStatement  =  "if"  Expression
+                         "then"  Body
+                         [ "else" Body ]
+                         "fi" .
+
+IterativeStatement  =  "while"  Expression  "do"  Body  "od" .
+
+PrintStatement  =  "print"  Expression .
+
+Expression  =  SimpleExpression [ RelationalOperator SimpleExpression ] .
+
+RelationalOperator  =  "<" | "=<" | "=" | "!=" | ">=" | ">" .
+
+SimpleExpression  =  Term { AdditiveOperator Term } .
+
+AdditiveOperator  =  "+" | "-" | "or" .
+
+Term  =  Factor { MultiplicativeOperator Factor } .
+
+MultiplicativeOperator  =  "*" | "/" | "and" .
+
+Factor  =  [ UnaryOperator ] ( Literal  |  Identifier  | "(" Expression ")" ) .
+
+UnaryOperator  =  "-" | "not" .
+
+
+Literal  =  BooleanLiteral  |  IntegerLiteral .
+
+BooleanLiteral  =  "false"  |  "true" .
+
+IntegerLiteral  =  Digit { Digit } .
+
+Identifier  =  Letter { Letter | Digit | "_" }.
+
+Digit  =  "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" .
+
+Letter  = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k"
+        | "l" | "m" | "n" | "o" | "p" | "q" | "u" | "r" | "s" | "t" | "u"
+        | "v" | "w" | "x" | "y" | "z"
+        | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K"
+        | "L" | "M" | "N" | "O" | "P" | "Q" | "U" | "R" | "S" | "T" | "U"
+        | "V" | "W" | "X" | "Y" | "Z" .
+
+----------
+Comments:
+----------
+
+0.  Integer literals and identifiers are treated as terminal symbols.
+
+1.  White space is allowed anywhere, except within terminal symbols.
+
+1.  A comment begins with a double slash ("//") and terminates at the end of
+    the line.
+
+2.  "Maximum munch" applies. For example, "if1" is an identifier, not an "if"
+    followed by a "1".
+
+3.  The scope of a variable is from its declaration to the end of the nearest
+    enclosing body.  Standard rules for hiding apply.
+
+
+----------
+Description:
+----------
+1 Project Description
+Consider the grammar of “mini-language”, provided in file “grammar.txt”, and implement a lexical
+analyzer (a.k.a. scanner, lexer or tokenizer) for it.
+The scanner reads a file containing a sequence of characters and outputs the corresponding
+sequence of tokens (i.e., representations of terminal symbols), while omitting whitespace and comments.
+
+If the scanner reads any character that is not allowed by the grammar, it should generate an
+appropriate error message (with the position of the character) and stop the computation. For
+instance, the scanner should reject @t, as @ is not included in the alphabet of identifiers.
+For simplicity, you can assume that all integers are within range, i.e., you do not have to check
+for overflow.
+
+Each token should include the following information:
+1. The position of the lexeme. The position is a pair consisting of the line number of the lexeme
+and the position of the first character of the lexeme in that line.
+2. The kind of the lexeme. To keep things simple, use strings for representing the kind of
+lexemes.
+
+We have five different lexemes. The following is the kinds of the lexemes:
+(a) For identifiers the kind is “ID”. For example, for identifier ’speed’, the kind is “ID”.
+(b) For integers (i.e., numbers), the kind is “NUM”. For example, for the integer 3400, the
+kind is “NUM”.
+(c) For keywords, the keyword itself is the kind. For example, for the keyword ’false’, the
+kind is “false”.
+(d) For other symbols, the kind is a string corresponding to the symbol. For example, for
+the symbol ’:=’ the kind is “:=”.
+(e) There is a special kind “end-of-text”. Upon encountering the end of the input file, the
+scanner must generate a token whose kind is “end-of- text”.
+
+3. The value of the lexeme, if applicable. Only identifiers and integers have values. For
+example the value of lexeme ’19’ is integer 19 and the value of lexeme ’speed’ is string
+“speed”.
+Keywords and other symbols do not have values. For example, the lexeme ’(’ does not have
+any value. Similarly, the keyword ’while’ does not have a value.
+
+Your program should provide four procedures (that will be called by the parser in the next project):
+1. next(): reads the next lexeme in the input file. (This will not return any thing: it will cause
+the next token to be recognized.)
+2. kind(): returns the kind of the lexeme that was just read.
+3. value(): returns the value of the lexeme (if it is an “ID” or a “NUM”).
+4. position(): returns the position of the lexeme that was just read.
+
+The lexical analyzer is invoked by the syntax analyzer (parser). To simulate this in your first
+project, your main program should have a loop for reading the input and printing the tokens as
+follows:
+next();
+print( position(), kind(), value() );
+while ( kind() != ‘‘end-of-text’’ ) {
+next();
+print( position(), kind(), value() ); }
+
+----------
+You are not allowed to use the followiong:
+• Any library or module that supports regular expressions. Some examples are re
+of Python, and regex of Java or C++.
+• Any existing class or library with built-in methods/functions for tokenizing text
+files. For example, you are not allowed to use Scanner class in Java.
+1.1 What to submit?
+Please refer to COSC 455 Project 1 and 2 Submission Requirements.txt for the detailed instruction
