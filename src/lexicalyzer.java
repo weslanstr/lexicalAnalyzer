@@ -1,7 +1,7 @@
 /**
  * Lexilyer for COSC 455
  * by Wesley Lancaster
- * Submitted on 4/26/22
+ * Submitted on 10/25/22
  * @ wlanca2@students.towson.edu
  *
  * sample location: /Users/johnmetz/Desktop/cosc455/Project1Lex455
@@ -18,7 +18,7 @@ public class lexicalyzer {
                 |
                 * Lexilyzer for COSC 455
                 * by Wesley Lancaster
-                * Submitted on 10/??/22""");
+                * Submitted on 10/25/22""");
 
         Scanner fileName = new Scanner(System.in);
         System.out.println("\n|\nplease enter directory location of .txt file.....");
@@ -50,7 +50,6 @@ public class lexicalyzer {
             boolean noError = true;
 
 //THE CORE LOOP---------------------------------------------------------------------------------------------------------
-            // TODO 1 how do I ommit an empty line between lines? calling nextline() twice just breaks everything
             while (n.hasNextLine() && noError) {
                 Scanner txt = new Scanner(text);
 
@@ -89,7 +88,7 @@ public class lexicalyzer {
                     | end of text file
                     * Lexilyzer for COSC455
                     * by Wesley Lancaster
-                    * Submitted on 10/??/22""");
+                    * Submitted on 10/25/22""");
 
         } catch (FileNotFoundException e) {
             System.out.println("Error: file was not found (exception e)");
@@ -98,19 +97,25 @@ public class lexicalyzer {
 }
 
 //THE NEXT METH---------------------------------------------------------------------------------------------------------
-//TODO the challenge of this program it to create my own file reader.. that can read file lines like a scanner
+//TODO !!! need to create my own file reader !!!
+// TODO 1 how do I ommit an empty line between lines? calling nextline() twice just breaks everything
+
 class next extends lexicalyzer {
     public String next(String txt ) {
+        //todo A: this one reads words between spaces
         String lexeme = txt;
         return lexeme;
-
     }
     public String nextLine(String txt) {
+        //todo B: this one somehow needs to figure out what lines are
         String line = txt;
         return line;
         }
 
+        //endOfLine()
+
     public boolean hasNextLine(String txt) {
+        //todo C: this one will mechanically branch off of nextLine(), have exception()
         String line = txt;
         boolean tr = false;
         return tr;
@@ -148,8 +153,8 @@ class value extends lexicalyzer {
 
 //THE KIND METH---------------------------------------------------------------------------------------------------------
 class kind extends lexicalyzer {
-    //TODO 3 I need to store the identifiers for future loops.
-    //TODO 4 this does not account for identifiers with names similar to keywords. like 'print' and 'printy'
+    //TODO I need to store the identifiers for future loops.
+    //TODO this does not account for identifiers with names similar to keywords. like 'print' and 'printy'
     boolean noError = true;
 
     public Scanner kind(String lexeme, Scanner txt) {
@@ -275,7 +280,7 @@ class kind extends lexicalyzer {
             }
         }
 
-        //todo 3 fix me
+        //todo fix me
         else if (letter.contains("int") && !letter.contains("print")) { //reads keyword 'int'
             System.out.print("\nkind is keyword Declaration: " + letter);
 
@@ -293,7 +298,7 @@ class kind extends lexicalyzer {
             //{} somehow loop through each item, and return its value, kind and position
             //if identifier = true and .next() is also an identifier and not an operator, return an error.
         }
-        //todo 3 fix me
+        //todo fix me
         else if (letter.contains("bool")) { //reads keyword
             System.out.print("\nkind is keyword: " + letter);
 
@@ -302,7 +307,7 @@ class kind extends lexicalyzer {
                 System.exit(0);
             }
         }
-        //todo 3 fix me
+        //todo fix me
         else if (letter.contains("if")) { //reads 'if' statement
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
 
@@ -359,7 +364,7 @@ class kind extends lexicalyzer {
                 }
             }
         }
-        //todo 3 fix me
+        //todo fix me
         else if (letter.contains("else")) {
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
 
@@ -376,7 +381,7 @@ class kind extends lexicalyzer {
                 System.exit(0);
             }
         }
-        //todo 3 fix me
+        //todo fix me
         else if (letter.contains("while")) { //while statements
             System.out.print("\nkind is keyword IterativeStatement: " + letter);
 
