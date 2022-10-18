@@ -37,6 +37,12 @@ of a zero on the assignment. Consult the course syllabus for further details.
 The syntax
 ----------
 
+         /**
+         * variable vs terminal?
+         * rules?
+         * syntax table?
+         */
+
 Program  =  "program"  Identifier  ":"  Body  "end" .
 
 Body  =  [ Declarations ]  Statements .
