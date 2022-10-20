@@ -1,12 +1,11 @@
 /**
  * Lexilyer for COSC 455
  * by Wesley Lancaster
- * Submitted on 10/25/22
+ * Submitted on 10/22/22
  * @ wlanca2@students.towson.edu
  *
  * sample location: /Users/johnmetz/Desktop/cosc455/Project1Lex455
  **/
-
 import java.io.File;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
@@ -18,7 +17,7 @@ public class lexicalyzer {
                 |
                 * Lexilyzer for COSC 455
                 * by Wesley Lancaster
-                * Submitted on 10/25/22""");
+                * Submitted on 10/22/22""");
 
         Scanner fileName = new Scanner(System.in);
         System.out.println("\n|\nplease enter directory location of .txt file.....");
@@ -36,7 +35,8 @@ public class lexicalyzer {
         System.out.println("|");
 
         try {
-            String text = " ";
+            Scanner sc = new Scanner(x);
+            String text = sc.nextLine();
             System.out.print("|\nNext Line: " + text + "\nlength of this line is: " + text.length() + "\n");
             String lexeme = " ";
 
@@ -50,11 +50,12 @@ public class lexicalyzer {
             boolean noError = true;
 
 //THE CORE LOOP---------------------------------------------------------------------------------------------------------
-            while (n.hasNextLine() && noError) {
+            // TODO 1 how do I ommit an empty line between lines? calling nextline() twice just breaks everything
+            while (sc.hasNextLine() && noError) {
                 Scanner txt = new Scanner(text);
 
                 while (txt.hasNext()) {
-                    lexeme = n.next(String.valueOf(txt)); //calls next lexeme
+                    lexeme = n.next(txt); //calls next lexeme
                     System.out.print("\nlexeme being read is: " + lexeme);
                     i = text.indexOf(lexeme);
                     p.position(i, l); //returns current position of lexeme
@@ -62,14 +63,14 @@ public class lexicalyzer {
                     System.out.print("\n");
 
                     if (!txt.hasNext()) { //iterating to the next line
-                        text = n.nextLine();
+                        text = sc.nextLine();
                         System.out.print("|\nNext Line: " + text + "\nlength of this line is: " + text.length() + "\n");
                         i = 0;
                         l++;
                     }
                 }
 
-                if(!n.hasNextLine()){ //internal to make sure the last line is called and ends with "end"
+                if(!sc.hasNextLine()){ //internal to make sure the last line is called and ends with "end"
                     if(text.contains("end")){
                         System.out.print("\nlexeme being read is: "+ text +
                                 "\nposition within line is: "+i +" and position is line: "+l+
@@ -88,7 +89,8 @@ public class lexicalyzer {
                     | end of text file
                     * Lexilyzer for COSC455
                     * by Wesley Lancaster
-                    * Submitted on 10/25/22""");
+                    * Submitted on 10/22/22""");
+            sc.close();
 
         } catch (FileNotFoundException e) {
             System.out.println("Error: file was not found (exception e)");
@@ -97,25 +99,29 @@ public class lexicalyzer {
 }
 
 //THE NEXT METH---------------------------------------------------------------------------------------------------------
-//TODO !!! need to create my own file reader !!!
-// TODO 1 how do I ommit an empty line between lines? calling nextline() twice just breaks everything
-
 class next extends lexicalyzer {
-    public String next(String txt ) {
-        //todo A: this one reads words between spaces
-        String lexeme = txt;
+
+    //todo A: need to make my own method for reading next lines... by storing the entire .txt into a String
+    public String next(Scanner txt) {
+        String lexeme = txt.next();
         return lexeme;
     }
+
     public String nextLine(String txt) {
         //todo B: this one somehow needs to figure out what lines are
         String line = txt;
         return line;
-        }
-
-        //endOfLine()
+    }
 
     public boolean hasNextLine(String txt) {
         //todo C: this one will mechanically branch off of nextLine(), have exception()
+        String line = txt;
+        boolean tr = false;
+        return tr;
+    }
+
+    public boolean endOfLine(String txt) {
+        //todo D: this one returns true if the the current position is the end of the last lexeme
         String line = txt;
         boolean tr = false;
         return tr;
@@ -153,8 +159,8 @@ class value extends lexicalyzer {
 
 //THE KIND METH---------------------------------------------------------------------------------------------------------
 class kind extends lexicalyzer {
-    //TODO I need to store the identifiers for future loops.
-    //TODO this does not account for identifiers with names similar to keywords. like 'print' and 'printy'
+    //TODO 3 I need to store the identifiers for future loops.
+    //TODO 4 this does not account for identifiers with names similar to keywords. like 'print' and 'printy'
     boolean noError = true;
 
     public Scanner kind(String lexeme, Scanner txt) {
@@ -280,7 +286,7 @@ class kind extends lexicalyzer {
             }
         }
 
-        //todo fix me
+        //todo 3 fix me
         else if (letter.contains("int") && !letter.contains("print")) { //reads keyword 'int'
             System.out.print("\nkind is keyword Declaration: " + letter);
 
@@ -298,7 +304,7 @@ class kind extends lexicalyzer {
             //{} somehow loop through each item, and return its value, kind and position
             //if identifier = true and .next() is also an identifier and not an operator, return an error.
         }
-        //todo fix me
+        //todo 3 fix me
         else if (letter.contains("bool")) { //reads keyword
             System.out.print("\nkind is keyword: " + letter);
 
@@ -307,7 +313,7 @@ class kind extends lexicalyzer {
                 System.exit(0);
             }
         }
-        //todo fix me
+        //todo 3 fix me
         else if (letter.contains("if")) { //reads 'if' statement
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
 
@@ -364,7 +370,7 @@ class kind extends lexicalyzer {
                 }
             }
         }
-        //todo fix me
+        //todo 3 fix me
         else if (letter.contains("else")) {
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
 
@@ -381,7 +387,7 @@ class kind extends lexicalyzer {
                 System.exit(0);
             }
         }
-        //todo fix me
+        //todo 3 fix me
         else if (letter.contains("while")) { //while statements
             System.out.print("\nkind is keyword IterativeStatement: " + letter);
 
@@ -484,4 +490,12 @@ class kind extends lexicalyzer {
         public void ast (String contents){
         }
     }
-}//LINE 500!! :D
+}
+
+
+
+
+
+
+
+//LINE 500!! :D

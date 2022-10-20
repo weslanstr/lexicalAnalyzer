@@ -1,0 +1,11 @@
+Wesley Lancaster
+
+dev specifications:
+
+Java ??
+
+IntelliJ IDEA 2022.2
+
+Program usage:
+the user will be prompter to enter the location of the file that user wants to be read
+when the file is analyzed, each line will be seperated by a | new line | and each lexeme will be seperated by a space
