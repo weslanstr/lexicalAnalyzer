@@ -4,12 +4,14 @@
  * Submitted on 10/22/22
  * @ wlanca2@students.towson.edu
  *
- * sample location: /Users/johnmetz/Desktop/cosc455/Project1Lex455
+ * sample location: /Users/johnmetz/Desktop/cosc455/455JAVA/project1/Examples/ab.txt
  **/
 import java.io.File;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 
+//this is the main method. It will prompt for the txt file location
+//then use a loop to cycle through each lexeme, of each line, while callin each of the 4 methods
 public class lexicalyzer {
     public static void main(String[] args){
 
@@ -19,6 +21,8 @@ public class lexicalyzer {
                 * by Wesley Lancaster
                 * Submitted on 10/22/22""");
 
+        //this scanner is only used to access the text file and called to read nextLine-
+        //which is then stored into a string. However, I read between lexemes with my own next() method.
         Scanner fileName = new Scanner(System.in);
         System.out.println("\n|\nplease enter directory location of .txt file.....");
         String name = fileName.nextLine();
@@ -38,43 +42,43 @@ public class lexicalyzer {
             Scanner sc = new Scanner(x);
             String text = sc.nextLine();
             System.out.print("|\nNext Line: " + text + "\nlength of this line is: " + text.length() + "\n");
-            String lexeme = " ";
+            String lexeme = "";
 
             next n = new next();
             position p = new position();
+            value v = new value();
             kind k = new kind();
-            //value v = new value();
 
             int i = 0;
             int l = 1;
             boolean noError = true;
 
 //THE CORE LOOP---------------------------------------------------------------------------------------------------------
-            // TODO 1 how do I ommit an empty line between lines? calling nextline() twice just breaks everything
-            while (sc.hasNextLine() && noError) {
+            while (n.hasNext(text, i) || noError || sc.hasNextLine()) {
                 Scanner txt = new Scanner(text);
 
                 while (txt.hasNext()) {
-                    lexeme = n.next(txt); //calls next lexeme
+                    lexeme = n.next(text, i); //calls next lexeme
                     System.out.print("\nlexeme being read is: " + lexeme);
-                    i = text.indexOf(lexeme);
+                    i += lexeme.length();
                     p.position(i, l); //returns current position of lexeme
-                    k.kind(lexeme, txt); //v.value(lexeme) is called inside the kind() class
+                    i = k.kind(lexeme, text, i);
                     System.out.print("\n");
 
-                    if (!txt.hasNext()) { //iterating to the next line
+                    //iterating to the next line
+                    if (i >= text.length()) {
                         text = sc.nextLine();
-                        System.out.print("|\nNext Line: " + text + "\nlength of this line is: " + text.length() + "\n");
+                        System.out.print("|\nNext Line: " + text + "\n");
                         i = 0;
                         l++;
                     }
                 }
-
-                if(!sc.hasNextLine()){ //internal to make sure the last line is called and ends with "end"
+                //to make sure the last line says: "end"
+                if(!sc.hasNextLine()){
                     if(text.contains("end")){
                         System.out.print("\nlexeme being read is: "+ text +
                                 "\nposition within line is: "+i +" and position is line: "+l+
-                                "\nkind is: end of file declaration: end\n" +
+                                "\nkind is: end of text: end\n" +
                                 "letter/s read: end\n");
                     }
                     else{
@@ -91,52 +95,77 @@ public class lexicalyzer {
                     * by Wesley Lancaster
                     * Submitted on 10/22/22""");
             sc.close();
-
-        } catch (FileNotFoundException e) {
+        }
+        //catch if theres no file in location
+        catch (FileNotFoundException e) {
             System.out.println("Error: file was not found (exception e)");
         }
     }
 }
 
-//THE NEXT METH---------------------------------------------------------------------------------------------------------
+//THE NEXT METHOD-------------------------------------------------------------------------------------------------------
 class next extends lexicalyzer {
+    //the method for reading lexemes
+        public String next(String text, int i) {
 
-    //todo A: need to make my own method for reading next lines... by storing the entire .txt into a String
-    public String next(Scanner txt) {
-        String lexeme = txt.next();
+        String lexeme ="";
+        int endOfLine = text.length() - 1;
+        char c;
+
+        if(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
+            while(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
+                i++;
+                if(i == text.length()){
+                    break;
+                }
+            }
+        }
+
+        for (i = i; i < text.length(); i++) {
+
+            if (Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))) {
+                break;
+            }
+            else
+            {
+                c = text.charAt(i);
+                lexeme = lexeme + c;
+            }
+        }
         return lexeme;
     }
 
-    public String nextLine(String txt) {
-        //todo B: this one somehow needs to figure out what lines are
-        String line = txt;
-        return line;
+    //used to determine if there is any lexemes remaining in the current line of text
+        public Boolean hasNext(String text, int i) {
+        boolean hasNext = false;
+
+            if(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
+                while(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
+                    i++;
+                    if(i == text.length() || i > text.length()){
+                        hasNext = false;
+                        break;
+                    }
+                    else if(!Character.isWhitespace(text.charAt(i)) || !Character.isSpaceChar(text.charAt(i))){
+                        hasNext = true;
+                        break;
+                    }
+                }
+            }
+            return hasNext;
+        }
     }
 
-    public boolean hasNextLine(String txt) {
-        //todo C: this one will mechanically branch off of nextLine(), have exception()
-        String line = txt;
-        boolean tr = false;
-        return tr;
-    }
-
-    public boolean endOfLine(String txt) {
-        //todo D: this one returns true if the the current position is the end of the last lexeme
-        String line = txt;
-        boolean tr = false;
-        return tr;
-    }
-}
-
-//THE POSITION METH-----------------------------------------------------------------------------------------------------
+//THE POSITION METHOD---------------------------------------------------------------------------------------------------
 class position extends lexicalyzer {
     public void position(int i, int l) {
-        System.out.print("\nposition within line is: "+i+" and position is line: "+l);
+        System.out.print("\nline: "+l+" index: "+i);
     }
 }
 
-//THE VALUE METH--------------------------------------------------------------------------------------------------------
+//THE VALUE METHOD------------------------------------------------------------------------------------------------------
 class value extends lexicalyzer {
+    //this method relies on the kind() method to determine the value, then this one simply prints
     public void value(String lexeme, boolean noError) {
         boolean result = lexeme.matches("[0-9]+");
         boolean symbol = lexeme.matches("[(,),{,},:,;]+");
@@ -157,21 +186,28 @@ class value extends lexicalyzer {
     }
 }
 
-//THE KIND METH---------------------------------------------------------------------------------------------------------
+//THE KIND METHOD-------------------------------------------------------------------------------------------------------
 class kind extends lexicalyzer {
+    //this method is a monster, mainly because it already has some foundation for the upcoming project 2
+    //only about 1/3 of the code in kind() is really used for identifying the kind of lexeme,
+    //with the remaining for future syntax analysis
+
     //TODO 3 I need to store the identifiers for future loops.
     //TODO 4 this does not account for identifiers with names similar to keywords. like 'print' and 'printy'
     boolean noError = true;
 
-    public Scanner kind(String lexeme, Scanner txt) {
+    public int kind(String lexeme, String text, int i) {
         kind k = new kind();
         value v = new value();
+        next n = new next();
 
         if (lexeme.contains("//")) {
             v.value(lexeme, noError);
-            System.out.print("\nkind is: Single comment: " + lexeme);
-            while (txt.hasNext()) {
-                System.out.print(" " + txt.next());
+            System.out.print("\nkind is: Single comment: ");
+            while(i < text.length()){
+                lexeme = n.next(text, i);
+                i += lexeme.length() + 1;
+                System.out.print(" " + lexeme);
             }
         }
 
@@ -185,41 +221,41 @@ class kind extends lexicalyzer {
         StringBuilder stringBuilder3 = new StringBuilder();
         StringBuilder stringBuilder4 = new StringBuilder();
 
-        for (int i = 0; i < lexeme.length(); i++) {
-            if (lexeme.charAt(i) == 'a' || lexeme.charAt(i) == 'b' || lexeme.charAt(i) == 'c' || lexeme.charAt(i) == 'd'
-                    || lexeme.charAt(i) == 'e' || lexeme.charAt(i) == 'f' || lexeme.charAt(i) == 'g' || lexeme.charAt(i) == 'h'
-                    || lexeme.charAt(i) == 'i' || lexeme.charAt(i) == 'j' || lexeme.charAt(i) == 'k' || lexeme.charAt(i) == 'l'
-                    || lexeme.charAt(i) == 'm' || lexeme.charAt(i) == 'n' || lexeme.charAt(i) == 'o' || lexeme.charAt(i) == 'p'
-                    || lexeme.charAt(i) == 'q' || lexeme.charAt(i) == 'r' || lexeme.charAt(i) == 's' || lexeme.charAt(i) == 't'
-                    || lexeme.charAt(i) == 'u' || lexeme.charAt(i) == 'v' || lexeme.charAt(i) == 'w' || lexeme.charAt(i) == 'x'
-                    || lexeme.charAt(i) == 'y' || lexeme.charAt(i) == 'z'
-                    || lexeme.charAt(i) == 'A' || lexeme.charAt(i) == 'B' || lexeme.charAt(i) == 'C' || lexeme.charAt(i) == 'D'
-                    || lexeme.charAt(i) == 'E' || lexeme.charAt(i) == 'F' || lexeme.charAt(i) == 'G' || lexeme.charAt(i) == 'H'
-                    || lexeme.charAt(i) == 'I' || lexeme.charAt(i) == 'J' || lexeme.charAt(i) == 'K' || lexeme.charAt(i) == 'L'
-                    || lexeme.charAt(i) == 'M' || lexeme.charAt(i) == 'N' || lexeme.charAt(i) == 'O' || lexeme.charAt(i) == 'P'
-                    || lexeme.charAt(i) == 'Q' || lexeme.charAt(i) == 'R' || lexeme.charAt(i) == 'S' || lexeme.charAt(i) == 'T'
-                    || lexeme.charAt(i) == 'U' || lexeme.charAt(i) == 'V' || lexeme.charAt(i) == 'W' || lexeme.charAt(i) == 'X'
-                    || lexeme.charAt(i) == 'Y' || lexeme.charAt(i) == 'Z') {
-                char chaL = lexeme.charAt(i);
+        for (int j = 0; j < lexeme.length(); j++) {
+            if (lexeme.charAt(j) == 'a' || lexeme.charAt(j) == 'b' || lexeme.charAt(j) == 'c' || lexeme.charAt(j) == 'd'
+                    || lexeme.charAt(j) == 'e' || lexeme.charAt(j) == 'f' || lexeme.charAt(j) == 'g' || lexeme.charAt(j) == 'h'
+                    || lexeme.charAt(j) == 'i' || lexeme.charAt(j) == 'j' || lexeme.charAt(j) == 'k' || lexeme.charAt(j) == 'l'
+                    || lexeme.charAt(j) == 'm' || lexeme.charAt(j) == 'n' || lexeme.charAt(j) == 'o' || lexeme.charAt(j) == 'p'
+                    || lexeme.charAt(j) == 'q' || lexeme.charAt(j) == 'r' || lexeme.charAt(j) == 's' || lexeme.charAt(j) == 't'
+                    || lexeme.charAt(j) == 'u' || lexeme.charAt(j) == 'v' || lexeme.charAt(j) == 'w' || lexeme.charAt(j) == 'x'
+                    || lexeme.charAt(j) == 'y' || lexeme.charAt(j) == 'z'
+                    || lexeme.charAt(j) == 'A' || lexeme.charAt(j) == 'B' || lexeme.charAt(j) == 'C' || lexeme.charAt(j) == 'D'
+                    || lexeme.charAt(j) == 'E' || lexeme.charAt(j) == 'F' || lexeme.charAt(j) == 'G' || lexeme.charAt(j) == 'H'
+                    || lexeme.charAt(j) == 'I' || lexeme.charAt(j) == 'J' || lexeme.charAt(j) == 'K' || lexeme.charAt(j) == 'L'
+                    || lexeme.charAt(j) == 'M' || lexeme.charAt(j) == 'N' || lexeme.charAt(j) == 'O' || lexeme.charAt(j) == 'P'
+                    || lexeme.charAt(j) == 'Q' || lexeme.charAt(j) == 'R' || lexeme.charAt(j) == 'S' || lexeme.charAt(j) == 'T'
+                    || lexeme.charAt(j) == 'U' || lexeme.charAt(j) == 'V' || lexeme.charAt(j) == 'W' || lexeme.charAt(j) == 'X'
+                    || lexeme.charAt(j) == 'Y' || lexeme.charAt(j) == 'Z') {
+                char chaL = lexeme.charAt(j);
                 stringBuilder1.append(letter).append(chaL);
             }
 
-            if (lexeme.charAt(i) == '1' || lexeme.charAt(i) == '2' || lexeme.charAt(i) == '3' || lexeme.charAt(i) == '4'
-                    || lexeme.charAt(i) == '5' || lexeme.charAt(i) == '6' || lexeme.charAt(i) == '7' || lexeme.charAt(i) == '8'
-                    || lexeme.charAt(i) == '9' || lexeme.charAt(i) == '0') {
-                char chaN = lexeme.charAt(i);
+            if (lexeme.charAt(j) == '1' || lexeme.charAt(j) == '2' || lexeme.charAt(j) == '3' || lexeme.charAt(j) == '4'
+                    || lexeme.charAt(j) == '5' || lexeme.charAt(j) == '6' || lexeme.charAt(j) == '7' || lexeme.charAt(j) == '8'
+                    || lexeme.charAt(j) == '9' || lexeme.charAt(j) == '0') {
+                char chaN = lexeme.charAt(j);
                 stringBuilder2.append(number).append(chaN);
                 v.value(number, noError);
             }
-            if (lexeme.charAt(i) == '{' || lexeme.charAt(i) == '}' || lexeme.charAt(i) == '(' || lexeme.charAt(i) == ')'
-                    || lexeme.charAt(i) == ';' || lexeme.charAt(i) == '[' || lexeme.charAt(i) == ']' || lexeme.charAt(i) == ':') {
-                char chaS = lexeme.charAt(i);
+            if (lexeme.charAt(j) == '{' || lexeme.charAt(j) == '}' || lexeme.charAt(j) == '(' || lexeme.charAt(j) == ')'
+                    || lexeme.charAt(j) == ';' || lexeme.charAt(j) == '[' || lexeme.charAt(j) == ']' || lexeme.charAt(j) == ':') {
+                char chaS = lexeme.charAt(j);
                 stringBuilder3.append(symbol).append(chaS);
             }
-            if (lexeme.charAt(i) == '+' || lexeme.charAt(i) == '-' || lexeme.charAt(i) == '/' || lexeme.charAt(i) == '*'
-                    || lexeme.charAt(i) == '<' || lexeme.charAt(i) == '>' || lexeme.charAt(i) == '=' || lexeme.charAt(i) == '!'
-                    || lexeme.charAt(i) == '|' || lexeme.charAt(i) == '%' || lexeme.charAt(i) == ':') {
-                char chaR = lexeme.charAt(i);
+            if (lexeme.charAt(j) == '+' || lexeme.charAt(j) == '-' || lexeme.charAt(j) == '/' || lexeme.charAt(j) == '*'
+                    || lexeme.charAt(j) == '<' || lexeme.charAt(j) == '>' || lexeme.charAt(j) == '=' || lexeme.charAt(j) == '!'
+                    || lexeme.charAt(j) == '|' || lexeme.charAt(j) == '%' || lexeme.charAt(j) == ':') {
+                char chaR = lexeme.charAt(j);
                 stringBuilder4.append(operator).append(chaR);
             }
         }
@@ -248,7 +284,7 @@ class kind extends lexicalyzer {
         if (lexeme.contains(":") || lexeme.contains("=")) {
             if(!lexeme.matches(":=")){
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN ':=' ?");
-                System.exit(0);
+                //System.exit(0);
             }
             else if(lexeme.contains(":=")||lexeme.contains("=<")||lexeme.contains(">=")||lexeme.contains("!=")){
                 System.out.print("\nkind is RelationalOperator: " + lexeme);
@@ -261,8 +297,9 @@ class kind extends lexicalyzer {
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'program' ?");
                 System.exit(0);
             }
-            if(txt.hasNext()){
-                letter = txt.next();
+            if(n.hasNext(text, i)){
+                letter = n.next(text, i);
+                i += lexeme.length() + 1;
             }
             else{
                 System.out.print(" \nSYNTAX ERROR DETECTED, PROGRAM MUST BE IDENTIFIED FOLLOWED BY ':' ");
@@ -273,8 +310,9 @@ class kind extends lexicalyzer {
             }
             else if (!letter.contains(":")){
                 System.out.print("\nidentifier: " + letter);
-                if(txt.hasNext()){
-                    letter = txt.next();
+                if(n.hasNext(text, i)){
+                    letter = n.next(text, i);
+                    i += lexeme.length() + 1;
                 }
                 if(letter.contains(":")){
                     System.out.print(letter);
@@ -289,97 +327,108 @@ class kind extends lexicalyzer {
         //todo 3 fix me
         else if (letter.contains("int") && !letter.contains("print")) { //reads keyword 'int'
             System.out.print("\nkind is keyword Declaration: " + letter);
-
             if(!letter.matches("int")){ //if int is misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'int' ?");
                 System.exit(0);
             }
-            if(!txt.hasNext()){ //if int isn't given a name to initialize.
+            /**
+            if(!n.hasNext(text, i)){ //if int isn't given a name to initialize.
                 System.out.print(" \nSYNTAX ERROR DETECTED, 'int' MUST BE USED TO INITIALIZE A IDENTIFIER");
                 System.exit(0);
             }
+             **/
             //while(!letter.contains(";"))
             //if(!txt.hasNext)
             //{} print "error this needs to end with ';'
             //{} somehow loop through each item, and return its value, kind and position
             //if identifier = true and .next() is also an identifier and not an operator, return an error.
         }
-        //todo 3 fix me
         else if (letter.contains("bool")) { //reads keyword
             System.out.print("\nkind is keyword: " + letter);
-
             if(!letter.matches("bool")){
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'bool' ?");
                 System.exit(0);
             }
         }
-        //todo 3 fix me
         else if (letter.contains("if")) { //reads 'if' statement
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
-
             if(!letter.matches("if")){ //misspell catcher
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'if' ?");
                 System.exit(0);
             }
-            letter = txt.next();
+            /**
+            letter = n.next(text, i);
+            i += lexeme.length() + 1;
+
             if(letter.contains("not")){
                 if(!letter.matches("not")){ //misspell catcher
-                    System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'not' ?");
-                    System.exit(0);
+                    //System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'not' ?");
+                    //System.exit(0);
                 }
                 while(!letter.contains("then")){//this is an issue
-
                     System.out.print(" " + letter + " ");
-                    letter = txt.next();
+                    letter = n.next(text, i);
+                    i += lexeme.length() + 1;
                     if(letter.contains("then")){
                         if(!letter.matches("then")){ //misspell catcher
-                            System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'then' ?");
-                            System.exit(0);
+                            //System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'then' ?");
+                            //System.exit(0);
                         }
                     }
                 }
-                while(txt.hasNext()) {
+                while(n.hasNext(text, i)) {
 
-
-                    //add stuff to this so contents are also lexilized
-
+                    //todo add stuff to this so contents are also lexilized
 
                     System.out.print(" " + letter + " ");
-                    letter = txt.next();
+                    letter = n.next(text, i);
+                    i += lexeme.length() + 1;
                 }
             }
             else if(!letter.contains("not")){
                 while(!letter.contains("then")){
                     System.out.print(" " + letter + " ");
-                    letter = txt.next();
+                    letter = n.next(text, i);
+                    i += lexeme.length() + 1;
                     if(letter.contains("then")){
                         if(!letter.matches("then")){ //misspell catcher
-                            System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'then' ?");
-                            System.exit(0);
+                            //System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'then' ?");
+                            //System.exit(0);
                         }
                     }
                 }
-                while(txt.hasNext()) {
+                while(n.hasNext(text, i)) {
 
-
-                    //add stuff to this so contents are also lexilized
-
+                    //todo add stuff to this so contents are also lexilized
 
                     System.out.print(" " + letter + " ");
-                    letter = txt.next();
+                    letter = n.next(text, i);
+                    i += lexeme.length() + 1;
                 }
             }
+             **/
         }
-        //todo 3 fix me
+        else if (letter.contains("not")) { //reads 'if' statement
+            System.out.print("\nkind is keyword ConditionalStatement: " + letter);
+            if (!letter.matches("not")) { //misspell catcher
+                System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'if' ?");
+                System.exit(0);
+            }
+        }
+            else if (letter.contains("then")) { //reads 'if' statement
+            System.out.print("\nkind is keyword ConditionalStatement: " + letter);
+            if (!letter.matches("then")) { //misspell catcher
+                System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'if' ?");
+                System.exit(0);
+            }
+        }
         else if (letter.contains("else")) {
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
-
             if(!letter.matches("else")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'else' ?");
                 System.exit(0);
             }
         }
-
         else if (letter.contains("fi")) {
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
             if(!letter.matches("fi")){ //if misspelled
@@ -387,43 +436,34 @@ class kind extends lexicalyzer {
                 System.exit(0);
             }
         }
-        //todo 3 fix me
         else if (letter.contains("while")) { //while statements
             System.out.print("\nkind is keyword IterativeStatement: " + letter);
-
             if(!letter.matches("while")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'while' ?");
                 System.exit(0);
             }
         }
-
         else if (letter.contains("od")) {
             System.out.print("\nkind is keyword IterativeStatement: " + letter);
-
             if(!letter.matches("od")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'od' ?");
                 System.exit(0);
             }
         }
-
         else if (letter.contains("print")) {
             System.out.print("\nkind is keyword PrintStatement: " + letter);
-
             if(!letter.matches("print")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'print' ?");
                 System.exit(0);
             }
         }
-
         else if (letter.contains("false")) {
             System.out.print("\nkind is keyword BooleanLiteral: " + letter);
-
             if(!letter.matches("false")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'false' ?");
                 System.exit(0);
             }
         }
-
         else if (letter.contains("true")) {
             System.out.print("\nkind is keyword BooleanLiteral: " + letter);
             if(!letter.matches("true")){ //if misspelled
@@ -431,6 +471,22 @@ class kind extends lexicalyzer {
                 System.exit(0);
             }
         }
+        else if (letter.contains("end")) {
+            System.out.print("\nkind is keyword end of text: " + letter);
+            if(!letter.matches("end")){ //if misspelled
+                System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'end' ?");
+                System.exit(0);
+            }
+            System.out.print("""
+
+                    |
+                    | end of text file
+                    * Lexilyzer for COSC455
+                    * by Wesley Lancaster
+                    * Submitted on 10/22/22""");
+            System.exit(0);
+        }
+
 
         else if(lexeme.contains(";")){
             System.out.print("\nkind is keyword: " + symbol);
@@ -481,8 +537,7 @@ class kind extends lexicalyzer {
         else{
             System.out.print("\nkind is Identifier: " + letter);
         }
-
-        return txt;
+        return i;
     }
 
     //TODO N THE AST TREE
@@ -491,11 +546,3 @@ class kind extends lexicalyzer {
         }
     }
 }
-
-
-
-
-
-
-
-//LINE 500!! :D
