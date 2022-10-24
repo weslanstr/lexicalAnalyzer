@@ -2,9 +2,9 @@ Wesley Lancaster
 
 dev specifications:
 
-Java 17
+IntelliJ IDEA 2022.3.2 (Community Edition)
 
-IntelliJ IDEA 2022.3.2
+15 Oracle Open JDK version 15
 
 Compile using the following command:
 javac lexicalyzer.java
@@ -31,3 +31,5 @@ to be analyzed.
 
 Known issues:
 A deep looping issue is causing my code to read lexemes improperly.
+The issue is extremely strange, and I spent the last few days trying and failing to identify the pattern.
+Despite my best efforts, I was not able to resolve it in time. 

@@ -30,6 +30,7 @@ public class lexicalyzer {
         fileName.close();
         File x = new File(name);
 
+        //checking if the file exist with the scanner
         if(x.exists()) {
             System.out.print("....."+x.getName() +  " exists!" + "\n");
         }
@@ -41,7 +42,7 @@ public class lexicalyzer {
         try {
             Scanner sc = new Scanner(x);
             String text = sc.nextLine();
-            System.out.print("|\nNext Line: " + text + "\nlength of this line is: " + text.length() + "\n");
+            System.out.print("|\nNext Line: " + text + "\n");
             String lexeme = "";
 
             next n = new next();
@@ -54,13 +55,15 @@ public class lexicalyzer {
             boolean noError = true;
 
 //THE CORE LOOP---------------------------------------------------------------------------------------------------------
+            //this loop is significant, as its job is to loop for each lexeme, until the end of a line,
+            //and then loop each line until the end of the text file.
             while (n.hasNext(text, i) || noError || sc.hasNextLine()) {
                 Scanner txt = new Scanner(text);
 
                 while (txt.hasNext()) {
                     lexeme = n.next(text, i); //calls next lexeme
                     System.out.print("\nlexeme being read is: " + lexeme);
-                    i += lexeme.length();
+                    i += lexeme.length() + 1;
                     p.position(i, l); //returns current position of lexeme
                     i = k.kind(lexeme, text, i);
                     System.out.print("\n");
@@ -109,30 +112,31 @@ class next extends lexicalyzer {
         public String next(String text, int i) {
 
         String lexeme ="";
-        int endOfLine = text.length() - 1;
         char c;
 
-        if(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
-            while(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
-                i++;
-                if(i == text.length()){
-                    break;
+            //is current char empty or not?
+            //if yes, then iterate until either not empty, or end of line
+            if(!Character.isWhitespace(text.charAt(i)) || !Character.isSpaceChar(text.charAt(i))){
+                while(!Character.isWhitespace(text.charAt(i)) || !Character.isSpaceChar(text.charAt(i))){
+                    c = text.charAt(i);
+                    lexeme = lexeme + c;
+                    i++;
+                    if(i >= text.length()){break;}
                 }
             }
-        }
-
-        for (i = i; i < text.length(); i++) {
-
-            if (Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))) {
-                break;
+            else if(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
+                while(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
+                    i++;
+                    if(i >= text.length()){break;}
+                }
+                while(!Character.isWhitespace(text.charAt(i)) || !Character.isSpaceChar(text.charAt(i))){
+                    c = text.charAt(i);
+                    lexeme = lexeme + c;
+                    i++;
+                    if(i >= text.length()){break;}
+                }
             }
-            else
-            {
-                c = text.charAt(i);
-                lexeme = lexeme + c;
-            }
-        }
-        return lexeme;
+            return lexeme;
     }
 
     //used to determine if there is any lexemes remaining in the current line of text
@@ -142,7 +146,7 @@ class next extends lexicalyzer {
             if(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
                 while(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
                     i++;
-                    if(i == text.length() || i > text.length()){
+                    if(i >= text.length()){
                         hasNext = false;
                         break;
                     }
@@ -158,6 +162,7 @@ class next extends lexicalyzer {
 
 //THE POSITION METHOD---------------------------------------------------------------------------------------------------
 class position extends lexicalyzer {
+    //this method simply prints the line and position of a lexeme being read.
     public void position(int i, int l) {
         System.out.print("\nline: "+l+" index: "+i);
     }
@@ -165,7 +170,7 @@ class position extends lexicalyzer {
 
 //THE VALUE METHOD------------------------------------------------------------------------------------------------------
 class value extends lexicalyzer {
-    //this method relies on the kind() method to determine the value, then this one simply prints
+    //this method prints the value, but relies on the kind() method to actually determine the value of the lexeme
     public void value(String lexeme, boolean noError) {
         boolean result = lexeme.matches("[0-9]+");
         boolean symbol = lexeme.matches("[(,),{,},:,;]+");
@@ -190,10 +195,11 @@ class value extends lexicalyzer {
 class kind extends lexicalyzer {
     //this method is a monster, mainly because it already has some foundation for the upcoming project 2
     //only about 1/3 of the code in kind() is really used for identifying the kind of lexeme,
-    //with the remaining for future syntax analysis
+    //with the remaining for future syntax analysis and rules
 
     //TODO 3 I need to store the identifiers for future loops.
     //TODO 4 this does not account for identifiers with names similar to keywords. like 'print' and 'printy'
+    //no error is used to pass to value, and if returns false, will be returned to the 'core loop' to end the code.
     boolean noError = true;
 
     public int kind(String lexeme, String text, int i) {
@@ -283,7 +289,7 @@ class kind extends lexicalyzer {
 
         if (lexeme.contains(":") || lexeme.contains("=")) {
             if(!lexeme.matches(":=")){
-                System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN ':=' ?");
+                //System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN ':=' ?");
                 //System.exit(0);
             }
             else if(lexeme.contains(":=")||lexeme.contains("=<")||lexeme.contains(">=")||lexeme.contains("!=")){
@@ -298,12 +304,13 @@ class kind extends lexicalyzer {
                 System.exit(0);
             }
             if(n.hasNext(text, i)){
+                i += letter.length();
                 letter = n.next(text, i);
                 i += lexeme.length() + 1;
             }
             else{
                 System.out.print(" \nSYNTAX ERROR DETECTED, PROGRAM MUST BE IDENTIFIED FOLLOWED BY ':' ");
-                System.exit(0);
+                //System.exit(0);
             }
             if(letter.contains(":")){
                 System.out.print("\nidentifier: " + letter);
@@ -311,6 +318,7 @@ class kind extends lexicalyzer {
             else if (!letter.contains(":")){
                 System.out.print("\nidentifier: " + letter);
                 if(n.hasNext(text, i)){
+                    i += letter.length();
                     letter = n.next(text, i);
                     i += lexeme.length() + 1;
                 }
@@ -318,25 +326,29 @@ class kind extends lexicalyzer {
                     System.out.print(letter);
                 }
                 else if(!letter.contains(":")){
-                    System.out.print(" \nSYNTAX ERROR DETECTED, PROGRAM IDENTIFIER MUST BE FOLLOWED BY ':' ?");
-                    System.exit(0);
+                    //System.out.print(" \nSYNTAX ERROR DETECTED, PROGRAM IDENTIFIER MUST BE FOLLOWED BY ':' ?");
+                    //System.exit(0);
                 }
             }
         }
 
-        //todo 3 fix me
+        //todo int must be:
+        // followed by a id and contain a ';'
+        // or be initialized to some combination of logic that ends with ';'
         else if (letter.contains("int") && !letter.contains("print")) { //reads keyword 'int'
             System.out.print("\nkind is keyword Declaration: " + letter);
             if(!letter.matches("int")){ //if int is misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'int' ?");
                 System.exit(0);
             }
+
             /**
             if(!n.hasNext(text, i)){ //if int isn't given a name to initialize.
                 System.out.print(" \nSYNTAX ERROR DETECTED, 'int' MUST BE USED TO INITIALIZE A IDENTIFIER");
                 System.exit(0);
             }
              **/
+
             //while(!letter.contains(";"))
             //if(!txt.hasNext)
             //{} print "error this needs to end with ';'
@@ -533,8 +545,11 @@ class kind extends lexicalyzer {
             System.out.print("\nkind is operator: " + operator);
         }
         else if (operator.contains("//")) {
+            //????
         }
         else{
+            //todo identifyer:
+            // this cannot account for 'int' as 'in' how to fix?
             System.out.print("\nkind is Identifier: " + letter);
         }
         return i;
