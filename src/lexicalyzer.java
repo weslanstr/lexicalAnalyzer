@@ -222,11 +222,13 @@ class kind extends lexicalyzer {
         String symbol = "";
         String operator = "";
 
+        //string builder is used for the .value() method to construct the different values of a lexeme read.
         StringBuilder stringBuilder1 = new StringBuilder();
         StringBuilder stringBuilder2 = new StringBuilder();
         StringBuilder stringBuilder3 = new StringBuilder();
         StringBuilder stringBuilder4 = new StringBuilder();
 
+        //these next few blocks are for categorizing the list of symbols.
         for (int j = 0; j < lexeme.length(); j++) {
             if (lexeme.charAt(j) == 'a' || lexeme.charAt(j) == 'b' || lexeme.charAt(j) == 'c' || lexeme.charAt(j) == 'd'
                     || lexeme.charAt(j) == 'e' || lexeme.charAt(j) == 'f' || lexeme.charAt(j) == 'g' || lexeme.charAt(j) == 'h'
@@ -287,6 +289,7 @@ class kind extends lexicalyzer {
             v.value(operator, noError);
         }
 
+        //this is the start of out .kind() logic, for determining keywords and rules they follow.
         if (lexeme.contains(":") || lexeme.contains("=")) {
             if(!lexeme.matches(":=")){
                 //System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN ':=' ?");
@@ -555,7 +558,7 @@ class kind extends lexicalyzer {
         return i;
     }
 
-    //TODO N THE AST TREE
+    //TODO THE AST TREE
     class ast extends lexicalyzer{
         public void ast (String contents){
         }

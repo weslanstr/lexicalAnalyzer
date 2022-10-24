@@ -30,6 +30,8 @@ which then calls its own .nextLine() and saves it into a String lexeme to be pas
 to be analyzed.
 
 Known issues:
-A deep looping issue is causing my code to read lexemes improperly.
-The issue is extremely strange, and I spent the last few days trying and failing to identify the pattern.
-Despite my best efforts, I was not able to resolve it in time. 
+A deep looping issue is causing my code to read words/ lexemes in a peculiar way that can be annoying.
+At its worst, it simply causes my code to sometimes reread lexemes.
+This issue (for reasons far beyond my ability to understand) causes my .next() to repeat, or chop up words rarely and randomly.
+Testing, by replacing my .next() method with the scanner's .next() confirms that the issue is with my code.
+But after rewriting my .next() methods like 10 times, I really am not sure how my issue is possible.
