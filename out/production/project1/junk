@@ -1,0 +1,15 @@
+if(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
+                while(i <= text.length() || Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
+                    System.out.println("iterating while char is empty");
+                    i++;
+                }
+            }
+
+            if(!Character.isWhitespace(text.charAt(i)) || !Character.isSpaceChar(text.charAt(i))){
+                while(i <= text.length() || !Character.isWhitespace(text.charAt(i)) || !Character.isSpaceChar(text.charAt(i))){
+                    c = text.charAt(i);
+                    lexeme = lexeme + c;
+                    System.out.println(lexeme);
+                    i++;
+                }
+            }
