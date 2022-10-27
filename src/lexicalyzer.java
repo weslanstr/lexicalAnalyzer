@@ -64,14 +64,14 @@ public class lexicalyzer {
                     lexeme = n.next(text, i); //calls next lexeme
                     System.out.print("\nlexeme being read is: " + lexeme);
                     i += lexeme.length() + 1;
-                    p.position(i, l); //returns current position of lexeme
+                    p.position(i, l, lexeme); //returns current position of lexeme
                     i = k.kind(lexeme, text, i);
                     System.out.print("\n");
 
                     //iterating to the next line
                     if (i >= text.length()) {
                         text = sc.nextLine();
-                        System.out.print("|\nNext Line: " + text + "\n");
+                        System.out.print("|\nNext Line: " + text + "\n" + "length: " + text.length() + "\n");
                         i = 0;
                         l++;
                     }
@@ -163,7 +163,8 @@ class next extends lexicalyzer {
 //THE POSITION METHOD---------------------------------------------------------------------------------------------------
 class position extends lexicalyzer {
     //this method simply prints the line and position of a lexeme being read.
-    public void position(int i, int l) {
+    public void position(int i, int l, String lexeme) {
+        i -= lexeme.length() - 1;
         System.out.print("\nline: "+l+" index: "+i);
     }
 }
@@ -221,6 +222,7 @@ class kind extends lexicalyzer {
         String number = "";
         String symbol = "";
         String operator = "";
+        char c = '1';
 
         //string builder is used for the .value() method to construct the different values of a lexeme read.
         StringBuilder stringBuilder1 = new StringBuilder();
@@ -312,7 +314,7 @@ class kind extends lexicalyzer {
                 i += lexeme.length() + 1;
             }
             else{
-                System.out.print(" \nSYNTAX ERROR DETECTED, PROGRAM MUST BE IDENTIFIED FOLLOWED BY ':' ");
+                System.out.print(" \nSYNTAX ERROR DETECTED, PROGRAM MUST BE GIVEN ID FOLLOWED BY ':' ");
                 //System.exit(0);
             }
             if(letter.contains(":")){
@@ -344,19 +346,17 @@ class kind extends lexicalyzer {
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'int' ?");
                 System.exit(0);
             }
-
-            /**
+/**
             if(!n.hasNext(text, i)){ //if int isn't given a name to initialize.
                 System.out.print(" \nSYNTAX ERROR DETECTED, 'int' MUST BE USED TO INITIALIZE A IDENTIFIER");
-                System.exit(0);
+                //System.exit(0);
             }
-             **/
-
             //while(!letter.contains(";"))
             //if(!txt.hasNext)
             //{} print "error this needs to end with ';'
             //{} somehow loop through each item, and return its value, kind and position
             //if identifier = true and .next() is also an identifier and not an operator, return an error.
+ **/
         }
         else if (letter.contains("bool")) { //reads keyword
             System.out.print("\nkind is keyword: " + letter);
@@ -426,14 +426,14 @@ class kind extends lexicalyzer {
         else if (letter.contains("not")) { //reads 'if' statement
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
             if (!letter.matches("not")) { //misspell catcher
-                System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'if' ?");
+                System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'not' ?");
                 System.exit(0);
             }
         }
             else if (letter.contains("then")) { //reads 'if' statement
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
             if (!letter.matches("then")) { //misspell catcher
-                System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'if' ?");
+                System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'then' ?");
                 System.exit(0);
             }
         }
@@ -553,7 +553,7 @@ class kind extends lexicalyzer {
         else{
             //todo identifyer:
             // this cannot account for 'int' as 'in' how to fix?
-            System.out.print("\nkind is Identifier: " + letter);
+            System.out.print("\nkind is unrecignized Identifier: " + letter);
         }
         return i;
     }

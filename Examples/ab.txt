@@ -4,7 +4,7 @@ program Twenty:
   int b;
   a := 2;
   b := 1;
-  if not (a < 0) then
+  if not (a < 0) thenn
     int b;
     b := - 2;     //     (the inner b, the outer one is still 1)
     a := a * b    // a = -4

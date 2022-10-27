@@ -1,3 +1,7 @@
+
+my different types of next() loops:
+
+type 1-
 if(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
                 while(i <= text.length() || Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
                     System.out.println("iterating while char is empty");
@@ -13,3 +17,27 @@ if(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i
                     i++;
                 }
             }
+
+type 2-
+if(!Character.isWhitespace(text.charAt(i)) || !Character.isSpaceChar(text.charAt(i))){
+                while(!Character.isWhitespace(text.charAt(i)) || !Character.isSpaceChar(text.charAt(i))){
+                    c = text.charAt(i);
+                    lexeme = lexeme + c;
+                    i++;
+                    if(i >= text.length()){break;}
+                }
+            }
+            else if(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
+                while(Character.isWhitespace(text.charAt(i)) || Character.isSpaceChar(text.charAt(i))){
+                    i++;
+                    if(i >= text.length()){break;}
+                }
+                while(!Character.isWhitespace(text.charAt(i)) || !Character.isSpaceChar(text.charAt(i))){
+                    c = text.charAt(i);
+                    lexeme = lexeme + c;
+                    i++;
+                    if(i >= text.length()){break;}
+                }
+            }
+
+type 3-
