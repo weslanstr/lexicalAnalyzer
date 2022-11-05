@@ -158,6 +158,23 @@ class next extends lexicalyzer {
             }
             return hasNext;
         }
+
+        //this is my own method to compare strings of text
+        public Boolean matches(String text, String compared){
+            boolean matches = true;
+            int  i = 0;
+
+            while(i <= compared.length()){
+                if(text.charAt(i) == compared.charAt(i)){
+                    i++;
+                }
+                else{
+                    matches = false;
+                    break;
+                }
+            }
+            return matches;
+        }
     }
 
 //THE POSITION METHOD---------------------------------------------------------------------------------------------------
@@ -293,7 +310,7 @@ class kind extends lexicalyzer {
 
         //this is the start of out .kind() logic, for determining keywords and rules they follow.
         if (lexeme.contains(":") || lexeme.contains("=")) {
-            if(!lexeme.matches(":=")){
+            if(!lexeme.equals(":=")){
                 //System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN ':=' ?");
                 //System.exit(0);
             }
@@ -304,7 +321,7 @@ class kind extends lexicalyzer {
 
         else if (letter.contains("program")) {
             System.out.print("\nkind is keyword: " + letter);
-            if(!letter.matches("program")){ //if int is misspelled
+            if(!letter.equals("program")){ //if int is misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'program' ?");
                 System.exit(0);
             }
@@ -342,7 +359,7 @@ class kind extends lexicalyzer {
         // or be initialized to some combination of logic that ends with ';'
         else if (letter.contains("int") && !letter.contains("print")) { //reads keyword 'int'
             System.out.print("\nkind is keyword Declaration: " + letter);
-            if(!letter.matches("int")){ //if int is misspelled
+            if(!letter.equals("int")){ //if int is misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'int' ?");
                 System.exit(0);
             }
@@ -360,14 +377,14 @@ class kind extends lexicalyzer {
         }
         else if (letter.contains("bool")) { //reads keyword
             System.out.print("\nkind is keyword: " + letter);
-            if(!letter.matches("bool")){
+            if(!letter.equals("bool")){
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'bool' ?");
                 System.exit(0);
             }
         }
         else if (letter.contains("if")) { //reads 'if' statement
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
-            if(!letter.matches("if")){ //misspell catcher
+            if(!letter.equals("if")){ //misspell catcher
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'if' ?");
                 System.exit(0);
             }
@@ -425,70 +442,70 @@ class kind extends lexicalyzer {
         }
         else if (letter.contains("not")) { //reads 'if' statement
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
-            if (!letter.matches("not")) { //misspell catcher
+            if (!letter.equals("not")) { //misspell catcher
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'not' ?");
                 System.exit(0);
             }
         }
             else if (letter.contains("then")) { //reads 'if' statement
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
-            if (!letter.matches("then")) { //misspell catcher
+            if(!lexeme.equals("then")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'then' ?");
                 System.exit(0);
             }
         }
         else if (letter.contains("else")) {
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
-            if(!letter.matches("else")){ //if misspelled
+            if(!letter.equals("else")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'else' ?");
                 System.exit(0);
             }
         }
         else if (letter.contains("fi")) {
             System.out.print("\nkind is keyword ConditionalStatement: " + letter);
-            if(!letter.matches("fi")){ //if misspelled
+            if(!letter.equals("fi")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'fi' ?");
                 System.exit(0);
             }
         }
         else if (letter.contains("while")) { //while statements
             System.out.print("\nkind is keyword IterativeStatement: " + letter);
-            if(!letter.matches("while")){ //if misspelled
+            if(!letter.equals("while")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'while' ?");
                 System.exit(0);
             }
         }
         else if (letter.contains("od")) {
             System.out.print("\nkind is keyword IterativeStatement: " + letter);
-            if(!letter.matches("od")){ //if misspelled
+            if(!letter.equals("od")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'od' ?");
                 System.exit(0);
             }
         }
         else if (letter.contains("print")) {
             System.out.print("\nkind is keyword PrintStatement: " + letter);
-            if(!letter.matches("print")){ //if misspelled
+            if(!letter.equals("print")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'print' ?");
                 System.exit(0);
             }
         }
         else if (letter.contains("false")) {
             System.out.print("\nkind is keyword BooleanLiteral: " + letter);
-            if(!letter.matches("false")){ //if misspelled
+            if(!letter.equals("then")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'false' ?");
                 System.exit(0);
             }
         }
         else if (letter.contains("true")) {
             System.out.print("\nkind is keyword BooleanLiteral: " + letter);
-            if(!letter.matches("true")){ //if misspelled
+            if(!letter.equals("true")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'true' ?");
                 System.exit(0);
             }
         }
         else if (letter.contains("end")) {
             System.out.print("\nkind is keyword end of text: " + letter);
-            if(!letter.matches("end")){ //if misspelled
+            if(!letter.equals("end")){ //if misspelled
                 System.out.print(" \nSYNTAX ERROR DETECTED, DID YOU MEAN 'end' ?");
                 System.exit(0);
             }
